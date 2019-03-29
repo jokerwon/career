@@ -446,16 +446,15 @@ public interface MyBatisUserDao {
 
 #### 3.3  MyBatis  进阶
 
-##### 3.3.1  表关联
+##### 3.3.1  resultMap 表关联
 
 代码 3-7  创建 Post 类 pojo
 
 ~~~java
 package com.znv.database.demodatabase.pojo;
-import java.io.Serializable;
 
 @Alias("post")  //定义 Post 别名
-public class Post implements Serializable {
+public class Post {
     private int id;
     private User user;
     private String title;
@@ -464,11 +463,207 @@ public class Post implements Serializable {
 }
 ~~~
 
+在代码 3-3 加入 Post 关联
 
+`private List<Post> posts;`
 
+代码 3-8  新建映射文件
 
+~~~xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<mapper namespace="com.znv.joker.userMaper">
+	<!-- User 级联文章查询 方法配置 (一个用户对多个文章)  -->
+	<resultMap type="user" id="resultUserMap">
+        <!--
+		   - id: 数据库记录的主键
+           - result： 数据库记录的其他字段
+           - column： 数据库记录字段名
+           - property： bean 对象中的属性名
+		-->
+		<id property="id" column="user_id" />
+		<result property="username" column="username" />
+		<result property="mobile" column="mobile" />
+		<collection property="posts" ofType="post" column="userid">
+			<id property="id" column="post_id" javaType="int" jdbcType="INTEGER"/>   
+            <result property="title" column="title"/>
+            <result property="content" column="content"/> 
+		</collection>
+	</resultMap>
 
+    <!-- resultMap 与 resultType 不可共存 -->
+    <!-- resultMap 指向对应的自定义映射规则的id -->
+	<select id="getUser" resultMap="resultUserMap" parameterType="int">
+		SELECT u.*,p.*
+		FROM user u, post p
+		WHERE u.id=p.userid AND id=#{user_id} 
+	</select>
+    
+    <!-- User 级联文章查询 方法配置 (多个文章对一个用户)  -->
+	<resultMap type="Post" id="resultPostsMap">
+		<id property="id" column="post_id" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<association property="user" javaType="User">  
+	        <id property="id" column="userid"/>   
+	        <result property="username" column="username"/>   
+	        <result property="mobile" column="mobile"/>   
+        </association> 
+	</resultMap>
+
+	<select id="getPosts" resultMap="resultPostsMap" parameterType="int">
+		SELECT u.*,p.*
+		FROM user u, post p
+		WHERE u.id=p.userid AND p.post_id=#{post_id} 
+  </select>
+</mapper>
+~~~
+
+##### 3.3.2  动态 SQL
+
+1. if 标签
+
+   在 if 标签中先进行判断，如果值为 null 或等于空字符串，就不在 SQL 语句中进行此条件的判断。
+
+   这里的 1=1 是为了避免 if 标签都未匹配从而导致 SQL 语法错误
+
+   ~~~xml
+   <select id="dynamicIfTest" parameterType="Blog" resultType="Blog">
+   	select * from t_blog where 1=1
+   	<if test="title != null">
+   		and title = #{title}
+   	</if>
+   	<if test="content != null">
+   		and content = #{content}
+   	</if>
+   	<if test="owner != null">
+   		and owner = #{owner}
+   	</if>
+   </select>
+   ~~~
+
+2. where 标签
+
+   where 主要是用来简化 SQL语句中 where 条件判断，自动处理（前置）AND/OR 条件。 
+
+   如果将 AND/OR 写在 if 标签中 SQL 语句后在某些情况下还是会出现语法错误。
+
+   ~~~xml
+   <select id="dynamicWhereTest" parameterType="Blog" resultType="Blog">
+   	select * from t_blog 
+   	<where>
+   		<if test="title != null">
+   			title = #{title}
+   		</if>
+   		<if test="content != null">
+   			and content = #{content}
+   		</if>
+   		<if test="owner != null">
+   			and owner = #{owner}
+   		</if>
+   	</where>
+   </select>
+   ~~~
+
+3. set 标签
+
+   set 标签元素主要用在更新操作的时候，在包含的语句前输出一个 set，然后如果包含的语句是以逗号结束的话将会把该逗号忽略，如果 set 包含的内容为空的话则会出错。
+
+   ~~~xml
+   <update id="dynamicSetTest" parameterType="Blog">
+   	update t_blog
+   	<set>
+   		<if test="title != null">
+               title = #{title},
+   		</if>
+   		<if test="content != null">
+               content = #{content},
+   		</if>
+   		<if test="owner != null">
+               owner = #{owner}
+   		</if>
+   	</set>
+   	where id = #{id}
+   </update>
+   ~~~
+
+4. trim 标签
+
+   trim 是为了更灵活地去除多余关键字的标签，可以用来实现 where 和 set 的效果。
+
+   |        属性        | 描述                                                         |
+   | :----------------: | :----------------------------------------------------------- |
+   |       prefix       | 给sql语句拼接的前缀                                          |
+   |       suffix       | 给sql语句拼接的后缀                                          |
+   | prefixesToOverride | 去除sql语句前面的关键字或者字符，该关键字或者字符由prefixesToOverride属性指定，假设该属性指定为”AND”，当sql语句的开头为”AND”，trim标签将会去除该”AND” |
+   | suffixesToOverride | 去除sql语句后面的关键字或者字符，该关键字或者字符由suffixesToOverride属性指定 |
+
+   * 使用 if/trim 代替 where 标签
+
+     ~~~xml
+     <!-- 使用 if/trim 代替 where(判断参数) - 将 User 类不为空的属性作为 where 条件 -->  
+     <select id="getUsertList_if_trim" resultMap="resultMap_User">  
+         SELECT * 
+           FROM user u
+         <trim prefix="WHERE" prefixToOverride="AND|OR">  
+             <if test="username !=null ">  
+                 u.username LIKE CONCAT(CONCAT('%', #{username, jdbcType=VARCHAR}),'%')  
+             </if>  
+             <if test="sex != null and sex != '' ">  
+                 AND u.sex = #{sex, jdbcType=INTEGER}  
+             </if>  
+             <if test="birthday != null ">  
+                 AND u.birthday = #{birthday, jdbcType=DATE}  
+             </if>
+         </trim>     
+     </select>
+     ~~~
+
+   * 使用 trim 代替 set 标签
+
+     ~~~xml
+     <!-- if/trim代替set(判断参数) - 将 User 类不为空的属性更新 -->  
+     <update id="updateUser_if_trim" parameterType="com.yiibai.pojo.User">  
+         UPDATE user  
+         <trim prefix="SET" suffixToOverride=",">  
+             <if test="username != null and username != '' ">  
+                 username = #{username},  
+             </if>  
+             <if test="sex != null and sex != '' ">  
+                 sex = #{sex},  
+             </if>  
+             <if test="birthday != null ">  
+                 birthday = #{birthday},  
+             </if>  
+         </trim>  
+         WHERE user_id = #{user_id}  
+     </update>
+     ~~~
+
+5. choose( when, otherwise ) 标签
+
+   用法与 switch 相似。
+
+   ~~~xml
+   <select id="dynamicChooseTest" parameterType="Blog" resultType="Blog">
+   	select * from t_blog where 1 = 1 
+   	<choose>
+           <when test="title != null">
+               and title = #{title}
+           </when>
+           <when test="content != null">
+               and content = #{content}
+           </when>
+           <otherwise>
+               and owner = "owner1"
+           </otherwise>
+   	</choose>
+   </select>
+   ~~~
+
+   
 
 ### 四、 Web 相关
 
