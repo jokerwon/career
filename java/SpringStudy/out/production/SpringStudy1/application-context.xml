@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 先导入命名空间 context 和 p -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="car1" class="com.namespaceP.Car" p:band="Tesla" p:corp="Shanghai" p:maxSpeed="240" p:price="2100000.0"></bean>
+
+    <!--<bean id="person" class="com.namespacePspaceP.Person" p:name="Won" p:age="21" p:car-ref="car"></bean>-->
+
+    <!--autowire: 指定自动装配方式
+        - byName：根据 bean 的名字和当前 bean 的 setter 风格的属性名进行自动装配。
+        - byType：根据 bean 的类型和当前 bean 的类型进行自动装配。如果IOC容器中有两个及以上类型匹配的bean则报异常。
+    -->
+    <bean id="person" class="com.namespaceP.Person" p:name="Won" p:age="21" autowire="byType"></bean>
+
+</beans>

@@ -1,0 +1,104 @@
+*{margin: 0;padding: 0;}
+html,body{
+	height: 100%;
+	overflow: hidden;  /* 隐藏下拉框 */
+}
+body{
+	background-image: url(../image/background.png);
+}
+.layui-layout-admin .layui-logo {
+	font-size: 24px;
+}
+
+/* 解决高度塌陷 */
+.clearfix:after{
+	content:".";
+	dispaly:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}
+/* 时间线 */
+.tline_box{
+	margin: 50px auto auto 40px;
+}
+.tline_box>h1{
+	margin-bottom: 30px;
+	font-size: 36px;
+	font-weight: 600;
+}
+
+
+/* 登录框 */
+.login_box{
+	position: absolute;
+	top: 55%;
+	left: 75%;
+	transform: translate(-50%,-50%);
+	width: 550px;
+	box-shadow: 4px 4px 5px rgba(0,0,0,.6);
+	background-color: #fafafa;
+}
+/* 登录框标题 */
+.header{background-color: #009688;color: #fff;}
+.header h1{
+	padding: 10px 0;
+	text-align: center;
+	font-size: 66px;
+	font-weight: 400;
+}
+/* 输入框样式 */
+.content input[type="text"],.content input[type="password"]{
+	display: block;
+	width: 360px;
+	margin: 40px 103px;
+	height: 24px;
+	line-height: 24px;
+	border: 1px #dbdbdb solid;  /* 设置边框可以去除内嵌的阴影效果 */
+	border-radius: 5px;
+	box-shadow: none; 
+	padding:10px 10px;
+	vertical-align: middle;
+	color:#666;
+	outline: none;
+}
+/* 输入框聚焦时边框颜色 */
+.content input:focus{border-color: #009688}
+/* 输入框聚焦时去除提示(Chrome) */
+.content input:focus::-webkit-input-placeholder{color: transparent;} 
+/* icon */
+.layui-icon-username,
+.layui-icon-password{
+	position: absolute;
+	left: 53px;
+	font-size: 35px;
+	line-height: 46px;
+}
+
+/* 用户身份单选框 */
+.state_box{
+
+}
+.state_box input{
+	vertical-align: middle;
+}
+.state_box span{
+	margin-right: 30px;
+}
+/*登录按钮*/
+#login_btn{
+	display: block;
+	width: 386px;
+	height: 48px;
+	margin: 20px auto 40px auto;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	background-color: #4db6ac;
+	color:#fff; 
+	cursor: pointer;
+	outline: none;
+}
+/* 按钮按下时颜色 */
+#login_btn:focus{
+	background-color: #26a69a;
+}

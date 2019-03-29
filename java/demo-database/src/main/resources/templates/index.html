@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>首页 - 科研管理系统</title>
+  <link rel="stylesheet" href="layui/css/layui.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body class="layui-layout-body">
+  <div class="layui-layout layui-layout-admin">
+    <!-- 顶部导航区域 -->
+    <div class="layui-header">
+      <div class="layui-logo">科研管理系统</div>
+      <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item layui-this"><a href="">用户管理</a></li>
+        <li class="layui-nav-item"><a href="">员工管理</a></li>
+        <li class="layui-nav-item"><a href="">角色管理</a></li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">其它</a>
+          <dl class="layui-nav-child">
+            <dd><a href="">统计查询</a></dd>
+            <dd><a href="">数据转存</a></dd>
+          </dl>
+        </li>
+      </ul>
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+          <a href="javascript:;">
+            <!--<img src="" class="layui-nav-img">-->
+            <span th:text="${ user ? user.getUsername() : 'hello'}"></span>
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a href="">基本资料</a></dd>
+            <dd><a href="">安全设置</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item"><a href="">注销</a></li>
+      </ul>
+    </div>
+
+    <!-- 左侧导航区域 -->
+    <div class="layui-side layui-bg-black">
+      <div class="layui-side-scroll">
+        <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+          <li class="layui-nav-item"><a href="">权限分配</a></li>
+          <li class="layui-nav-item"><a href="">组织架构管理</a></li>
+          <li class="layui-nav-item"><a href="">项目类型管理</a></li>
+          <li class="layui-nav-item"><a href="">横向科研管理</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 内容主体区域 -->
+    <div class="layui-body" id="main">
+      <!-- 用户管理区 -->
+      <div id="user_manager" class="show_content">
+        <div>
+          <table class="layui-table" id="user_table">
+            <colgroup>
+              <col width="200">
+              <col width="200">
+              <col width="200">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>密码</th>
+                <th>操作</th>
+              </tr> 
+            </thead>
+            <tbody>
+              <tr th:each="item : ${list}">
+                <td><span th:text="${item.getId()}"></span></td>
+                <td><span th:text="${item.getUsername()}"></span></td>
+                <td><span th:text="${item.getPassword()}"></span></td>
+                <td>
+                  <div class="layui-btn-group">
+                    <button class="layui-btn edit_msg_btn"><i class="layui-icon">&#xe642;</i>编辑</button>
+                    <button class="layui-btn layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div class="layui-col-md4 layui-col-md-offset5">
+                    <button class="layui-btn add_user_btn"><i class="layui-icon">&#xe608;</i>添加</button>
+                  </div>
+                </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 员工管理区 -->
+      <div id="employee_manager"></div>
+
+      <!-- 角色管理区 -->
+      <div id="role_manager"></div>
+
+      <!-- 权限分配区 -->
+      <div id="right_manager"></div>
+
+      <!-- 组织架构管理区 -->
+      <div id="struct_manager"></div>
+
+      <!-- 项目类型管理区 -->
+      <div id="type_manager"></div>
+
+      <!-- 横向科研管理区 -->
+      <div id="hori_manager"></div>
+    </div>
+
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      © Joker Won
+    </div>
+  </div>
+
+  <!------------------------------------- layer --------------------------------->
+  <div id="edit_msg_layer" class="layer">
+    <div>
+      <input type="text" name="username" placeholder="用户名" class="layui-input">
+      <input type="password" name="old_psw" placeholder="旧密码" class="layui-input">
+      <input type="password" name="new_psw" placeholder="新密码" class="layui-input">
+      <input type="password" name="sure_psw" placeholder="确认密码" class="layui-input">
+    </div>
+    <div class="text_center">
+      <input type="submit" value="确认" id="edit_sub_btn" class="layui-btn">
+      <input type="button" value="取消" class="layui-btn layui-btn-primary close_layer">
+    </div>
+  </div>
+
+  <div id="add_user_layer" class="layer">
+    <div>
+      <input type="text" name="username" placeholder="用户名" class="layui-input">
+      <input type="password" name="new_psw" placeholder="新密码" class="layui-input">
+      <input type="password" name="sure_psw" placeholder="确认密码" class="layui-input">
+    </div>
+    <div class="text_center">
+      <input type="submit" value="确认" class="layui-btn">
+      <input type="button" value="取消" class="layui-btn layui-btn-primary close_layer">
+    </div>
+  </div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="layui/layui.js"></script>
+<script>
+//JavaScript代码区域
+var edit_msg_btn = $(".edit_msg_btn");
+var add_user_btn = $(".add_user_btn");
+var edit_sub_btn = $("#edit_sub_btn");
+
+edit_sub_btn.click(function () {
+  $.post('http://127.0.0.1:8090/user/')
+})
+
+//end
+
+layui.use('element', function(){
+  var element = layui.element;
+});
+//为取消按钮添加点击关闭弹出层事件
+layui.use('layer',function(){
+  $(".close_layer").click(function(){
+      layer.close(layer.index);
+    });
+});
+edit_msg_btn.click(function(){
+  layui.use('layer',function(){
+  var layer = layui.layer;
+  layer.open({
+    type: 1,
+    title: "编辑",
+    content: $('#edit_msg_layer'),
+    area: ['400px','400px'],
+    shadeClose: true,
+    anim: 1,
+    /*btn: ['确认','取消'],
+    yes: function(index,layero){
+      //提交修改后的信息
+
+      //关闭弹出层
+      layer.close(edit_msg_layer);
+    },
+    btn2: function(index,layero){
+      layer.close(edit_msg_layer);
+    }*/
+    });
+    $(".close_layer").click(function(){
+      layer.close(layer.index);
+    });
+  });
+});
+
+add_user_btn.click(function(){
+  layui.use('layer',function(){
+    let layer = layui.layer;
+    layer.open({
+      type: 1,
+      title: "添加",
+      content: $('#add_user_layer'),
+      area: ['400px','330px'],
+      shadeClose: true,
+      anim: 1
+    });
+  });
+});
+
+</script>
+</body>
+</html>

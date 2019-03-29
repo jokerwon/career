@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--使用property配置bean，当前类必须有无参构造器-->
+
+    <!--通过指定数据类型区分调用不同的构造函数-->
+    <bean id="car" class="com.springconfig.Car">
+        <constructor-arg value="Land Rover"></constructor-arg>
+        <constructor-arg value="Beijing"></constructor-arg>
+        <constructor-arg value="240" type="int"></constructor-arg>
+    </bean>
+    <bean id="car1" class="com.springconfig.Car">
+        <constructor-arg value="Benz"></constructor-arg>
+        <constructor-arg value="Shanghai"></constructor-arg>
+        <constructor-arg value="2400000" type="double"></constructor-arg>
+    </bean>
+
+    <bean id="person" class="com.springconfig.Person">
+        <property name="name" value="Joker"></property>
+        <property name="age" value="21"></property>
+        <!--<property name="car" ref="car"></property>-->
+        <!--<property name="car">
+            <ref bean="car"></ref>
+        </property>-->
+        <!--内部bean-->
+        <property name="car">
+            <bean class="com.springconfig.Car">
+                <constructor-arg value="Benz"></constructor-arg>
+                <constructor-arg value="Shanghai"></constructor-arg>
+                <constructor-arg value="2400000" type="double"></constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="person1" class="com.springconfig.Person">
+        <constructor-arg value="Jerry"></constructor-arg>
+        <constructor-arg value="22"></constructor-arg>
+        <constructor-arg ref="car"></constructor-arg>
+        <!--为级联属性赋值，在这之前必须要对属性进行初始化-->
+        <!-- 此处的name的 Car 为类名 -->
+        <property name="Car.price" value="260000"></property>
+    </bean>
+
+    <bean id="person2" class="com.springconfig.Person">
+        <property name="name" value="Charles"></property>
+        <property name="age" value="21"></property>
+        <property name="car" ref="car"></property>
+        <property name="friends">
+            <!-- list 标签与Bean中的 car 集合属性类型相同：
+                    List=><list>/<ref> , Map=><map>/<entry key="" value-ref="">   -->
+            <list>
+                <ref bean="friend"></ref>
+                <ref bean="friend1"></ref>
+                <bean class="com.springconfig.Friend">
+                    <property name="name" value="Snake"></property>
+                    <property name="gender" value="female"></property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="friend" class="com.springconfig.Friend">
+        <property name="name" value="Ox"></property>
+        <property name="gender" value="male"></property>
+    </bean>
+    <bean id="friend1" class="com.springconfig.Friend">
+        <property name="name" value="Mouse"></property>
+        <property name="gender" value="female"></property>
+    </bean>
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.znv.database.demodatabase.dao.EmployeeDao">
+    <!-- 1. 级联属性 -->
+    <resultMap id="MyEmp" type="com.znv.database.demodatabase.pojo.Employee">
+        <!--id: 数据库记录的主键-->
+        <!--result： 数据库记录的其他字段-->
+        <!--column： 数据库记录字段名-->
+        <!--property： bean 对象中的属性名-->
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="d_id" property="department.id"/>
+        <result column="d_name" property="department.name"/>
+    </resultMap>
+
+    <!-- 2. association 标签指定联合对象 -->
+    <resultMap id="MyEmp1" type="com.znv.database.demodatabase.pojo.Employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <!--javaType: required,指定联合对象的类型-->
+        <association property="department" javaType="com.znv.database.demodatabase.pojo.Department">
+            <id column="d_id" property="id"/>
+            <result column="d_name" property="name"/>
+        </association>
+    </resultMap>
+    
+    <select id="getEmpAndDept" resultMap="MyEmp1">
+        SELECT e.id id,e.name name,e.d_id,d.name d_name  FROM employee e,department d WHERE e.d_id=d.id AND e.id=#{id}
+    </select>
+</mapper>

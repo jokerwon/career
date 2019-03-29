@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+
+<!--namespace 指定 dao 的一个接口-->
+<mapper namespace="com.znv.database.demodatabase.dao.MyBatisUserDao">
+    <!-- id 指代此条 SQL，resultType 指定返回值类型，
+    使用 user 是因为在 User类中指代了别名，也可以用全限定名com.znv.database.demodatabase.pojo.User -->
+    
+    <!--通过 username 获取用户信息-->
+    <select id="getUserByUsername" parameterType="String" resultType="user">
+        SELECT * FROM user WHERE username = #{username}
+    </select>
+    <!-- 获取所有用户信息 -->
+    <select id="findAllUsers" resultType="user">
+        SELECT * FROM user
+    </select>
+
+    <!-- 插入用户信息 -->
+    <insert id="insertUser" parameterType="user">
+        INSERT INTO User (id,username,password) values(#{id},#{username},#{password})
+    </insert>
+
+    <!--修改用户信息-->
+    <update id="updateUser" parameterType="user">
+        UPDATE user SET username=#{username},password=#{password} WHERE id=#{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="String">
+        DELETE FROM user WHERE username=#{username}
+    </delete>
+</mapper>
