@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script src="./js/Vue.js"></script>
+  <script>
+    let app = new Vue({
+      data: {
+        test: 'I am a test.'
+      }
+    })
+    app._data.test = 'Hello Vue'
+    console.log(app._data.test);
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+#app {
+  color: greenyellow;
+  backface-visibility: hidden;
+}
+#test {
+  height: 200px;
+  display: flex;
+}
+#test div {
+  flex: 1;
+  background-color: #eeeeee;
+}
+#test div:first-child {
+  background-color: pink;
+}
