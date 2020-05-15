@@ -427,7 +427,7 @@ WWW-Authenticate: Basic realm="Access to the staging site"
 
 ### 6.6 实体首部字段
 
-实体首部字段是包含在请求报文和响应报文中的实体部分所使用的首部，用于补充内容的更新时间等与实体相关的信息。
+实体首部字段是包含在请求报文和响应报文中的实体部分所使用的首部，用于补充内容的更新时间等与实体相关的信息。其位置可能分布在请求首部或响应首部中。
 
 #### 6.6.1 Allow
 
@@ -489,4 +489,102 @@ Content-Location: http://www.netease.com/index.html
 
 
 #### 6.6.6 Content-MD5
+
+首部字段 Content-MD5 是一串由 MD5 算法生成的值，其目的在于检查报文主体在传输过程中是否保持完整，以及确认传输到达。
+
+对报文主体执行 MD5 算法获得的 128 位二进制数，再通过 Base64 编码后将结果写入 Content-MD5 字段值。由于HTTP首部无法记录二进制值，所以要通过 Base64 编码处理。**为确保报文的有效性，作为接收方的客户端会对报文主体再执行一次相同的 MD5 算法。计算出的值与字段值作比较后，即可判断出报文主体的准确性。**
+
+采用这种方法，对内容上的偶发性改变是无从查证的，也无法检测出恶意篡改。其中一个原因在于，**内容如果能够被篡改，那么同时意味着 Content-MD5也可 重新计算然后被篡改。**所以处在接收阶段的客户端是无法意识到报文主体以及首部字段Content-MD5是已经被篡改过的。
+
+
+
+#### 6.6.7 Content-Range
+
+**针对范围请求**，返回响应时使用的首部字段 Content-Range，能告知客户端作为响应返回的实体的哪个部分符合范围请求。**字段值以字节为单位**，表示当前发送部分及整个实体大小。
+
+~~~
+Content-Range: bytes 5001-10000/10000
+~~~
+
+
+
+#### 6.6.8 Content-Type
+
+首部字段 Content-Type 说明了实体主体内对象的媒体类型。和首部字段 Accept 一样，字段值用 type/subtype 形式赋值。参数charset使用iso-8859-1或euc-jp等字符集进行赋值。
+
+~~~
+Content-Type: text/html;charset=UTF-8
+~~~
+
+
+
+#### 6.6.9 Expires
+
+首部字段 Expires 会将资源失效的日期告知客户端。缓存服务器在接收到含有首部字段 Expires 的响应后，会以缓存来应答请求，在 Expires 字段值指定的时间之前，响应的副本会一直被保存。当超过指定的时间后，缓存服务器在请求发送过来时，会转向源服务器请求资源。
+
+源服务器不希望缓存服务器对资源缓存时，最好在 Expires 字段内写入与首部字段 Date 相同的时间值。
+
+但是，**当首部字段 Cache-Control 有指定 max-age 指令时，比起首部字段 Expires，会优先处理 max-age 指令。**
+
+~~~
+Expires: Wed, 15 May 2020 00:00:00 GMT
+~~~
+
+
+
+#### 6.6.10 Last-Modified
+
+首部字段 Last-Modified 指明资源最终修改的时间。一般来说，这个值就是Request-URI指定资源被修改的时间。但类似使用CGI脚本进行动态数据处理时，该值有可能会变成数据最终修改时的时间。
+
+~~~
+Last-Modified: Wed, 15 May 2020 00:00:00 GMT
+~~~
+
+
+
+### 6.7 为Cookie服务的首部字段
+
+#### 6.7.1 Set-Cookie
+
+~~~
+Set-Cookie: status=enable; expires=Wed, 15 May 2020 00:00:00 GMT; => path=/; domain=baidu.com
+~~~
+
+##### 1. expires 属性
+
+Cookie 的 expires 属性指定浏览器可发送 Cookie 的有效期。
+
+当省略 expires 属性时，其有效期仅限于维持浏览器会话（Session）时间段内。这通常限于浏览器应用程序被关闭之前。
+
+另外，一旦 Cookie 从服务器端发送至客户端，服务器端就不存在可以显式删除 Cookie 的方法。但可通过覆盖已过期的 Cookie，实现对客户端 Cookie 的实质性删除操作。
+
+##### 2. path 属性
+
+Cookie 的 path 属性可用于限制指定 Cookie 的发送范围的文件目录。
+
+##### 3. domain 属性
+
+通过Cookie的domain属性指定的域名可做到与结尾匹配一致。比如，当指定 example.com 后，除  example.com 以外，www.example.com 或 www2.example.com 等都可以发送 Cookie。
+
+##### 4. secure 属性
+
+Cookie 的 secure 属性用于限制 Web 页面仅在 HTTPS 安全连接时，才可以发送 Cookie。
+
+发送Cookie时，指定secure属性的方法如下所示。
+
+~~~
+Set-Cookie: $name=$value; secure
+~~~
+
+##### 5. HttpOnly 属性
+
+Cookie 的 HttpOnly 属性是 Cookie 的扩展功能，它**使 JavaScript 脚本无法获得 Cookie**。其主要目的为 **防止跨站脚本攻击（Cross-site scripting, XSS）对 Cookie 的信息窃取**。
+
+发送指定HttpOnly属性的Cookie的方法如下所示。
+
+~~~
+Set-Cookie: $name=$value; HttpOnly 
+~~~
+
+顺带一提，该扩展并非是为了防止 XSS 而开发的。
 
