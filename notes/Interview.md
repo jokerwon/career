@@ -1,5 +1,183 @@
 ## HTML 和 CSS
 
+### 1. HTML
+
+#### 语义化
+
+#### 多媒体
+
+#### SEO
+
+
+
+### 2. CSS
+
+#### 布局
+
+##### 水平垂直居中
+
+1. ##### 定位
+
+   ~~~css
+   .father {
+     position: relative;
+   }
+   .son {
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     width: 200px;
+     height: 100px;
+     background-color: #2797ff;
+     /* 已知宽高 */
+     margin-top: -50px;
+     margin-left: -100px;
+     /* 未知宽高 */
+     transform: translate(-50%, -50%);
+   }
+   ~~~
+
+2. ##### flex
+
+   ~~~css
+   .father {
+     display: flex;
+     justify-content: center;
+     aligh-items: center
+   }
+   ~~~
+
+##### 双飞翼布局
+
+~~~html
+<body class="clearfix">
+  <div class="container">
+    <div class="center"></div>    
+  </div>
+  <div class="left"></div>
+  <div class="right"></div>
+</body>
+~~~
+
+~~~css
+.container {
+  float: left;
+  width: 100%;
+}
+
+.center {
+  height: 200px;
+  margin-left: 110px;
+  margin-right: 220px;
+  background: green;
+}
+
+.center::after {
+  content: '';
+  display: block;
+  font-size: 0;
+  height: 0;
+  zoom: 1;
+  clear: both;
+}
+
+.left {
+  float: left;
+  height: 200px;
+  width: 100px;
+  margin-left: -100%;
+  background: red;
+}
+
+.right {
+  float: right;
+  height: 200px;
+  width: 200px;
+  margin-left: -200px;
+  background: blue;
+}
+~~~
+
+##### 圣杯布局
+
+~~~html
+<div class="container clearfix">
+  <div class="center"></div>
+  <div class="left"></div>
+  <div class="right"></div>
+</div>
+~~~
+
+~~~css
+.container {
+  margin-left: 120px;
+  margin-right: 220px;
+}
+
+.main {
+  float: left;
+  width: 100%;
+  height: 300px;
+  background: green;
+}
+
+.left {
+  position: relative;
+  left: -120px;
+  float: left;
+  height: 300px;
+  width: 100px;
+  margin-left: -100%;
+  background: red;
+}
+
+.right {
+  position: relative;
+  right: -220px;
+  float: right;
+  height: 300px;
+  width: 200px;
+  margin-left: -200px;
+  background: blue;
+}
+~~~
+
+
+
+
+
+
+
+#### 盒子模型
+
+##### 标准盒模型（content-box）
+
+盒子大小 = content(width) + padding + border + margin
+
+##### 怪异盒模型（旧版本IE）(border-box)
+
+盒子大小 = (content + padding + border)(width) + margin
+
+##### Flex 盒模型
+
+
+
+#### BFC
+
+#### Flex
+
+#### Grid
+
+#### 响应式布局
+
+##### @media
+
+##### rem
+
+##### flex
+
+##### vh/vw
+
 
 
 ## JavaScript
