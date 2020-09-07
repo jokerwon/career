@@ -144,10 +144,6 @@
 
 
 
-
-
-
-
 #### 盒子模型
 
 ##### 标准盒模型（content-box）
@@ -164,7 +160,17 @@
 
 #### BFC
 
+- 触发条件
+  - body 根元素
+  - 浮动元素：float 除 none 以外的值
+  - 绝对定位元素：position (absolute、fixed)
+  - display 为 inline-block、table-cells、flex
+  - overflow 除了 visible 以外的值 (hidden、auto、scroll)
 
+- 特性及应用
+  1. 同一个 BFC 下外边距会发生折叠。
+  2. BFC 可以包含浮动元素。（应用场景：清除浮动）
+  3. BFC 可以阻止元素被浮动元素覆盖。
 
 
 
@@ -488,8 +494,6 @@
 
 
 
-
-
 #### 响应式布局
 
 ##### 1. @media
@@ -805,6 +809,11 @@ Sub.prototype.sayName = function() {
 
 ### 6. new
 
+1. 创建一个空的简单JavaScript对象（即`{}`）；
+2. 链接该对象（即设置该对象的构造函数）到另一个对象（构造器的原型对象） ；
+3. 将步骤1新创建的对象作为`this`的上下文 ；
+4. 如果该函数没有返回对象，则返回`this`。
+
 
 
 ### 7. this
@@ -887,17 +896,46 @@ doFoo(obj.foo);  // ops, gloabal
 
 ### 8. 事件循环
 
+
+
 ### 9. 垃圾回收
+
+- **标记清除**
+- **引用计数**
+
+
 
 ### 10. DOM 和 BOM
 
+
+
 ### 11. 模块化
+
+
 
 ### 12. 跨域
 
+#### 12.1 JSONP
+
+#### 12.2 document.domain + iframe
+
+#### 12.3 location.hash + iframe
+
+#### 12.4 window.name + iframe
+
+#### 12.5 postMessage
+
+#### 12.6 CORS(跨域资源共享)
+
+#### 12.7 nginx 代理
+
+#### 12.8 nodejs 中间件代理
+
+#### 12.9 websocket
+
+
+
 ### 13. 客户端存储
-
-
 
 
 
