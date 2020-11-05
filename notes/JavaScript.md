@@ -1,31 +1,6 @@
 # 迷人的 JavaScript
 
-## 一、字符串
-
-### 1. 字符串的遍历器接口
-
-ES6 为字符串添加了遍历器接口，使得字符串可以被`for...of`循环遍历。
-
-~~~js
-for (let codePoint of 'foo') {
-  console.log(codePoint)
-}
-// "f"
-// "o"
-// "o"
-~~~
-
-
-
-## 二、数值
-
-## 三、正则
-
-## 四、函数
-
-## 五、数组
-
-## 六、对象
+## 一、对象
 
 ### 1. 属性的简洁表示法
 
@@ -107,13 +82,31 @@ Object.getOwnPropertyDescriptor(obj, 'foo')
 
 `Reflect.ownKeys`返回一个数组，包含对象自身的所有键名，不管键名是 Symbol 或字符串，也不管是否可枚举。
 
-## 七、Symbol
 
-## 八、Set和Map
 
-## 九、Proxy
+## 二、Symbol
 
-## 十、Reflect
 
-## 十一、Promise
+
+## 三、Set和Map
+
+
+
+## 四、Proxy
+
+
+
+## 五、Reflect
+
+
+
+## 六、Promise
+
+
+
+## 七、Generator
+
+
+
+## 八、class 关键字
 
