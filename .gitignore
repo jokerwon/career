@@ -1,3 +1,7 @@
 node_modules
 .idea
 .DS_Store
+
+java/*/out
+java/*/lib
+java/!.mvn/wrapper/maven-wrapper.jar
