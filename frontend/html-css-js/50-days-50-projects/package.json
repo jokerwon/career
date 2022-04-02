@@ -1,0 +1,27 @@
+{
+  "name": "base-demo",
+  "version": "1.0.0",
+  "description": "frontend demo by html,css and javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitee.com:jokerwon/base-demo.git"
+  },
+  "keywords": [
+    "html",
+    "css",
+    "javascript"
+  ],
+  "author": "JokerWon",
+  "license": "ISC",
+  "devDependencies": {
+    "hygen": "^6.1.0"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "singleQuote": true
+  }
+}

@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #333;
+    color: #222;
+    height: 100vh;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+main {
+    width: 100vw;
+    min-height: 100vh;
+    background-color: #fafafa;
+}
+
+.content {
+    max-width: 1000px;
+    margin: 50px auto;
+}
+
+.content img {
+    max-width: 100%;
+}
+
+.content h1 {
+    margin: 0;
+}
+
+.content small {
+    color: #555;
+    font-style: italic;
+}
+
+.content p {
+    color: #333;
+    line-height: 1.5;
+}
