@@ -1,0 +1,5 @@
+packages:
+  - 'app/**'
+  - 'shared/**'
+  # 排除所有 test
+  - '!**/test/**'

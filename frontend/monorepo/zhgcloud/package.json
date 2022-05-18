@@ -1,0 +1,19 @@
+{
+  "name": "zhgcloud",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@7.0.0-rc.0",
+  "workspaces": [
+    "app/*",
+    "shared/*"
+  ],
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
+}
