@@ -1,35 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Promise</title>
 </head>
+
 <body>
-  
+
   <script src="./lib/Promise.js"></script>
   <script>
-    const p = new Promise((resovle, reject) => {
-      setTimeout(() => {
-        reject(1)
-      })
-    }).then(
-      value => {
-        console.log('onResolved1', value)
-        // return new Promise((resolve))
-      },
-      reason => {
-        console.log('onRejected1', reason)
-        return new Promise((resovle, reject) => { reject(3) })
+    (async () => {
+      const cases = [
+        () => {
+          return Promise.all([
+            Promise.resolve(18),
+            // Promise.reject('error'),
+            20,
+            new Promise((resolve, reject) => {
+              setTimeout(resolve, 100, 'foo');
+            })
+          ]).then(results => console.log(results)).catch(error => console.log(error));
+        },
+        () => {
+          return Promise.resolve({
+            then: ((resolve, reject) => {
+              resolve(29)
+            })
+          }).then(result => console.log(result))
+        },
+        () => {
+          return Promise.allSettled([
+            Promise.resolve(33),
+            new Promise((resolve) => setTimeout(() => resolve(66), 0)),
+            99,
+            Promise.reject(new Error("an error")),
+          ]).then((values) => console.log(values));
+        },
+        () => {
+          const pErr = new Promise((resolve, reject) => {
+            reject("总是失败");
+          });
+          const pSlow = new Promise((resolve, reject) => {
+            setTimeout(resolve, 500, "最终完成");
+          });
+          const pFast = new Promise((resolve, reject) => {
+            setTimeout(resolve, 100, "很快完成");
+          });
+          return Promise.any([pErr, pSlow, pFast]).then((value) => {
+            console.log(value);
+            // pFast fulfils first
+          })
+        },
+        () => {
+          const pErr = new Promise((resolve, reject) => {
+            reject('总是失败');
+          });
+          return Promise.any([pErr]).catch((err) => {
+            console.log(err);
+          })
+        },
+        () => {
+          var p1 = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 500, "one");
+          });
+          var p2 = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 100, "two");
+          });
+
+          Promise.race([p1, p2]).then(function (value) {
+            console.log(value); // "two"
+            // 两个都完成，但 p2 更快
+          });
+
+          var p3 = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 100, "three");
+          });
+          var p4 = new Promise(function (resolve, reject) {
+            setTimeout(reject, 500, "four");
+          });
+
+          Promise.race([p3, p4]).then(function (value) {
+            console.log(value); // "three"
+            // p3 更快，所以它完成了
+          }, function (reason) {
+            // 未被调用
+          });
+
+          var p5 = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 500, "five");
+          });
+          var p6 = new Promise(function (resolve, reject) {
+            setTimeout(reject, 100, "six");
+          });
+
+          Promise.race([p5, p6]).then(function (value) {
+            // 未被调用
+          }, function (reason) {
+            console.log(reason); // "six"
+            // p6 更快，所以它失败了
+          });
+
+        }
+      ]
+
+      for (const _case of cases) {
+        await _case()
       }
-    ).then(
-      value => {
-        console.log('onResolved2', value)
-      },
-      reason => {
-        console.log('onRejected2', reason)
-      }
-    )
+    })()
   </script>
 </body>
+
 </html>
